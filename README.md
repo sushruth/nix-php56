@@ -14,35 +14,23 @@ no developer needs to compile PHP from source.
 
 ## Using in devbox
 
-In `devbox.json`, replace:
+In `devbox.json`:
+
+1. Replace the php package reference
+2. Add `NIX_CONFIG` so nix pulls the prebuilt binary from Cachix instead of compiling
 
 ```json
-"github:fossar/nix-phps#php56": {"disable_plugin": true}
-```
-
-with:
-
-```json
-"github:sushruth/nix-php56#php56": {"disable_plugin": true}
-```
-
-Add the Cachix substituter so nix pulls the prebuilt binary:
-
-```json
-"env": {
-  "NIX_CONFIG": "extra-substituters = https://sushruth-nix-php56.cachix.org extra-trusted-public-keys = sushruth-nix-php56.cachix.org-1:diAqn4S5in05R1dMM3CXy29VLkOn9MyGG/ku+zqLmg8="
+{
+  "packages": [
+    "github:sushruth/nix-php56#php56": {"disable_plugin": true}
+  ],
+  "env": {
+    "NIX_CONFIG": "extra-substituters = https://sushruth-nix-php56.cachix.org extra-trusted-public-keys = sushruth-nix-php56.cachix.org-1:diAqn4S5in05R1dMM3CXy29VLkOn9MyGG/ku+zqLmg8="
+  }
 }
 ```
 
-## One-time Cachix setup (repo maintainer only)
-
-```bash
-cachix authtoken <token>
-nix build .#packages.aarch64-darwin.php56
-cachix push sushruth-nix-php56 ./result
-```
-
-After that, CI handles all future pushes.
+The cache is public — no auth token needed to pull.
 
 ## Why mcrypt only
 
