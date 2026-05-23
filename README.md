@@ -30,7 +30,7 @@ Add the Cachix substituter so nix pulls the prebuilt binary:
 
 ```json
 "env": {
-  "NIX_CONFIG": "extra-substituters = https://sushruth-nix-php56.cachix.org extra-trusted-public-keys = sushruth-nix-php56.cachix.org-1:<public-key-here>"
+  "NIX_CONFIG": "extra-substituters = https://sushruth-nix-php56.cachix.org extra-trusted-public-keys = sushruth-nix-php56.cachix.org-1:diAqn4S5in05R1dMM3CXy29VLkOn9MyGG/ku+zqLmg8="
 }
 ```
 
