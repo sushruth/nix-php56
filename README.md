@@ -1,6 +1,6 @@
 # nix-php56
 
-PHP 5.6 with mcrypt for PushPress devbox.
+PHP 5.6 with mcrypt.
 
 fossar/nix-phps ships php56 without mcrypt. CodeIgniter's Encrypt library requires it.
 This flake adds mcrypt via `withExtensions` and publishes prebuilt binaries to Cachix so
