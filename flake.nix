@@ -11,7 +11,16 @@
     in {
       packages = forAllSystems (system: {
         php56 = nix-phps.packages.${system}.php56.withExtensions
-          ({ enabled, all }: enabled ++ [ all.mcrypt all.datadog_trace ]);
+          ({ enabled, all }:
+            let
+              ddtrace = all.datadog_trace.overrideAttrs (old: {
+                postInstall = (old.postInstall or "") + ''
+                  ln -s $out/lib/php/extensions/ddtrace.so \
+                         $out/lib/php/extensions/datadog_trace.so
+                '';
+              });
+            in
+            enabled ++ [ all.mcrypt ddtrace ]);
         default = self.packages.${system}.php56;
       });
     };
