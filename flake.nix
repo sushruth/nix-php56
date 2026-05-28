@@ -11,7 +11,7 @@
     in {
       packages = forAllSystems (system: {
         php56 = nix-phps.packages.${system}.php56.withExtensions
-          ({ enabled, all }: enabled ++ [ all.mcrypt ]);
+          ({ enabled, all }: enabled ++ [ all.mcrypt all.datadog_trace ]);
         default = self.packages.${system}.php56;
       });
     };
