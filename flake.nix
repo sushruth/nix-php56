@@ -25,6 +25,9 @@
             };
             nativeBuildInputs = [ php56base php56base.unwrapped.dev php56base.packages.composer pkgs.which pkgs.autoconf pkgs.automake pkgs.libtool ];
             buildInputs = [ pkgs.curl pkgs.pcre ];
+            postPatch = ''
+              substituteInPlace Makefile --replace '/bin/bash' '${pkgs.bash}/bin/bash'
+            '';
             buildPhase = ''
               export HOME=$TMPDIR
               make
