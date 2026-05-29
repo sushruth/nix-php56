@@ -37,3 +37,10 @@ The cache is public — no auth token needed to pull.
 All other extensions needed by control-panel-legacy (`gd`, `intl`, `mysqli`, `mbstring`,
 `curl`, `openssl`, `sockets`) are already compiled into fossar's php56 default build.
 `imagick` is optional — both callers fall back to GD if not present.
+
+## Note: Linux sandbox disabled
+
+`make generate` in dd-trace-php runs `composer update` to download `classpreloader`
+for generating PHP bridge files. Nix sandbox on Linux blocks network access by default,
+causing the build to fail. CI disables sandbox for Linux builds (`NIX_CONFIG: sandbox = false`)
+to allow composer to fetch this dependency. macOS is unaffected (nix sandbox defaults to off).

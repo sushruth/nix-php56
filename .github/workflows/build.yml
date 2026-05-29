@@ -24,3 +24,5 @@ jobs:
           name: sushruth-nix-php56
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
       - run: nix build .#packages.${{ matrix.system }}.php56
+        env:
+          NIX_CONFIG: sandbox = false
