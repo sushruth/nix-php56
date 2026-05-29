@@ -14,6 +14,38 @@
           pkgs = nix-phps.inputs.nixpkgs.legacyPackages.${system};
           php56base = nix-phps.packages.${system}.php56;
 
+          phalcon = pkgs.stdenv.mkDerivation {
+            pname = "php56-phalcon";
+            version = "2.0.13";
+            src = pkgs.fetchFromGitHub {
+              owner = "phalcon";
+              repo = "cphalcon";
+              rev = "phalcon-v2.0.13";
+              sha256 = "sha256-AHoAHiBMNaRgHLtfe7sIqxQ5TQviDEhshXBp42f7kFY=";
+            };
+            nativeBuildInputs = [ php56base php56base.unwrapped.dev pkgs.autoconf pkgs.automake pkgs.libtool pkgs.which ];
+            buildInputs = [ pkgs.pcre ];
+            NIX_CFLAGS_COMPILE = "-Wno-implicit-function-declaration -Wno-error";
+            buildPhase = ''
+              # PDO headers aren't in php56base.unwrapped.dev ext dir — extract from PHP source
+              phpSrcDir=$(mktemp -d)
+              tar xjf ${php56base.unwrapped.src} -C "$phpSrcDir" --strip-components=1 --wildcards '*/ext/pdo'
+              export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I$phpSrcDir"
+              # subshell keeps cd from bleeding into installPhase
+              (
+                cd build/64bits
+                phpize
+                ./configure
+                make
+              )
+            '';
+            installPhase = ''
+              mkdir -p $out/lib/php/extensions
+              install -m 755 build/64bits/modules/phalcon.so $out/lib/php/extensions/phalcon.so
+            '';
+            passthru.extensionName = "phalcon";
+          };
+
           ddtrace = pkgs.stdenv.mkDerivation {
             pname = "php56-ddtrace";
             version = "PHP-5-e8a294d";
@@ -45,6 +77,7 @@
           php56 = php56base.withExtensions
             ({ enabled, all }: enabled ++ [ all.mcrypt ddtrace ]);
           default = self.packages.${system}.php56;
+          inherit phalcon;
         });
     };
 }
